@@ -1487,6 +1487,7 @@ if selected_page == "Demand Patterns":
             options=["All"] + sorted(pattern_df["Demand_Pattern"].dropna().unique().tolist()),
             key="demand_pattern_filter_original",
         )
+
         displayed_patterns = pattern_df if selected_pattern == "All" else pattern_df[pattern_df["Demand_Pattern"] == selected_pattern]
         st.dataframe(displayed_patterns, width="stretch", hide_index=True)
         st.download_button(
@@ -1496,7 +1497,24 @@ if selected_page == "Demand Patterns":
             mime="text/csv",
         )
     else:
-        st.warning("Demand pattern data not found. Check data/processed/demand_pattern_analysis.csv.")
+        try:
+            from src.demand_analysis import analyze_demand_patterns
+
+            with st.spinner("Generating demand pattern analysis..."):
+                analyze_demand_patterns()
+
+            if PATTERN_FILE.exists():
+                st.success("Demand pattern analysis generated successfully.")
+                st.rerun()
+            else:
+                st.error(
+                    "Demand pattern analysis could not be generated. "
+                    "Please check the application logs."
+                )
+
+        except Exception as exc:
+            st.error("Unable to generate demand pattern analysis.")
+            st.exception(exc)
 
 # --------------------------------------------------
 # FORECAST ROBUSTNESS COMPARISON
