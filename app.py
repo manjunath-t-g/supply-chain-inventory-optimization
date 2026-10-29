@@ -1338,7 +1338,21 @@ if selected_page == "Forecast Comparison":
             mime="text/csv",
         )
     else:
-        st.warning("Model comparison not found. Run: python src\forecasting.py")
+        try:
+            from src.forecasting import main as generate_forecast_comparison
+
+            with st.spinner("Generating forecast model comparison..."):
+                generate_forecast_comparison()
+
+            if COMPARISON_FILE.exists():
+                st.success("Forecast model comparison generated successfully.")
+                st.rerun()
+            else:
+                st.error("Forecast comparison file was not created.")
+
+        except Exception as exc:
+            st.error("Unable to generate forecast model comparison.")
+            st.exception(exc)
 
 # --------------------------------------------------
 # DEMAND PATTERN ANALYSIS
@@ -1723,10 +1737,21 @@ if selected_page == "Forecast Robustness":
         else:
             st.warning("The forecast robustness file contains no records.")
     else:
-        st.warning(
-            "Forecast robustness data not found. Check "
-            "data/processed/forecast_robustness_comparison.csv."
-        )
+        try:
+            from src.forecast_robustness import main as generate_robustness_results
+
+            with st.spinner("Generating forecast robustness results..."):
+                generate_robustness_results()
+
+            if ROBUSTNESS_FILE.exists():
+                st.success("Forecast robustness results generated successfully.")
+                st.rerun()
+            else:
+                st.error("Forecast robustness file was not created.")
+
+        except Exception as exc:
+            st.error("Unable to generate forecast robustness results.")
+            st.exception(exc)
 
 # --------------------------------------------------
 # SUPPLIER MANAGEMENT & INVENTORY SNAPSHOTS

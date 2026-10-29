@@ -50,7 +50,9 @@ app_original.py
 backup_before_supabase/
 
 # Generated analysis outputs
-data/processed/
+data/processed/*
+!data/processed/forecast_model_comparison.csv
+!data/processed/forecast_robustness_comparison.csv
 
 # Local integration snapshots (Supabase is the active database)
 data/integrations/

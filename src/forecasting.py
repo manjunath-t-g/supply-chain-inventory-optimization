@@ -193,7 +193,7 @@ def evaluate_product(product_code, warehouse, weekly_data=None):
 
 
 
-if __name__ == "__main__":
+def main():
     weekly = load_weekly_demand()
 
     print("=== MULTI-PRODUCT FORECAST EVALUATION ===")
@@ -361,4 +361,6 @@ if __name__ == "__main__":
             index=False,
         )
         print(f"Failed-pair details saved to: {failed_file}")
+if __name__ == "__main__":
+    main()
 
