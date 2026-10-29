@@ -440,11 +440,19 @@ def load_data(path):
 
 
 if not CLEANED_FILE.exists():
-    st.error(
-        "Cleaned demand data was not found. "
-        "Run: python src\\data_processing.py"
-    )
-    st.stop()
+    try:
+        from src.data_processing import load_and_clean_data
+
+        with st.spinner("Preparing historical demand data..."):
+            cleaned_data, quality_report = load_and_clean_data()
+
+            CLEANED_FILE.parent.mkdir(parents=True, exist_ok=True)
+            cleaned_data.to_csv(CLEANED_FILE, index=False)
+
+    except Exception as exc:
+        st.error("Unable to prepare historical demand data.")
+        st.exception(exc)
+        st.stop()
 
 # Use a validated user-uploaded dataset for this browser session when available.
 # The original cleaned CSV remains untouched and is the default data source.
