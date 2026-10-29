@@ -1,0 +1,8 @@
+pandas
+numpy
+matplotlib
+scikit-learn
+xgboost
+streamlit
+openpyxl
+supabase==2.33.0

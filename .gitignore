@@ -1,0 +1,56 @@
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Test and coverage artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Secrets and local environment settings
+.env
+.env.*
+!.env.example
+
+# Streamlit local configuration (may contain machine-specific settings)
+.streamlit/secrets.toml
+
+# Generated exports and temporary uploads
+uploads/
+temp/
+tmp/
+
+
+# Local backup files
+app_backup.py
+app_before_navigation.py
+app_original.py
+backup_before_supabase/
+
+# Generated analysis outputs
+data/processed/
+
+# Local integration snapshots (Supabase is the active database)
+data/integrations/
