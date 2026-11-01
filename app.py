@@ -25,35 +25,40 @@ st.set_page_config(
     layout="wide",
 )
 
+
 # --------------------------------------------------
-# GLOBAL STYLE
+# GLOBAL STYLE — THEME AWARE
 # --------------------------------------------------
 st.markdown(
     """
     <style>
     :root {
-        --sc-bg: #F4F7FC;
-        --sc-ink: #172B4D;
-        --sc-muted: #64748B;
+        /* Follow Streamlit's selected theme */
+        --sc-bg: var(--background-color);
+        --sc-surface: var(--secondary-background-color);
+        --sc-ink: var(--text-color);
+        --sc-muted: color-mix(in srgb, var(--text-color) 65%, transparent);
+
+        /* Permanent brand identity */
         --sc-navy: #0B1424;
         --sc-blue: #2563EB;
         --sc-cyan: #39D9D0;
-        --sc-border: rgba(148, 163, 184, 0.22);
+        --sc-border: color-mix(in srgb, var(--text-color) 16%, transparent);
     }
 
     @keyframes sc-fade-up {
         from { opacity: 0; transform: translateY(12px); }
-        to   { opacity: 1; transform: translateY(0); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes sc-soft-glow {
         0%, 100% { box-shadow: 0 0 0 rgba(57, 217, 208, 0); }
-        50%      { box-shadow: 0 0 18px rgba(57, 217, 208, 0.12); }
+        50% { box-shadow: 0 0 18px rgba(57, 217, 208, 0.12); }
     }
 
     @keyframes sc-pulse-dot {
         0%, 100% { opacity: 1; transform: scale(1); }
-        50%      { opacity: .55; transform: scale(.82); }
+        50% { opacity: .55; transform: scale(.82); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -67,19 +72,20 @@ st.markdown(
 
     html { scroll-behavior: smooth; }
 
+    /* Main application background */
     [data-testid="stAppViewContainer"] {
-        background:
-            radial-gradient(circle at 92% 3%, rgba(37, 99, 235, 0.065), transparent 24rem),
-            linear-gradient(135deg, #F8FAFF 0%, var(--sc-bg) 55%, #EEF5FF 100%);
-        color: var(--sc-ink);
-    }
+    background: var(--sc-bg);
+    color: var(--sc-ink);
+}
 
     [data-testid="stMainBlockContainer"] {
         animation: sc-fade-up .48s ease-out both;
         padding-top: 1.8rem;
         padding-bottom: 3rem;
+        color: var(--sc-ink);
     }
 
+    /* Keep branded navy sidebar in both themes */
     [data-testid="stSidebar"] {
         background: linear-gradient(180deg, #0B1424 0%, #101D31 58%, #0D1728 100%);
         border-right: 1px solid rgba(148, 163, 184, 0.14);
@@ -163,9 +169,9 @@ st.markdown(
         animation: sc-soft-glow 3.6s ease-in-out infinite;
     }
 
-    /* Premium cards and metric tiles */
+    /* Metric cards */
     [data-testid="stMetric"] {
-        background: rgba(255, 255, 255, .78);
+        background: var(--sc-surface);
         border: 1px solid var(--sc-border);
         border-radius: 15px;
         padding: 16px 18px;
@@ -176,11 +182,12 @@ st.markdown(
 
     [data-testid="stMetric"]:hover {
         transform: translateY(-4px);
-        border-color: rgba(37, 99, 235, .24);
+        border-color: rgba(37, 99, 235, .35);
         box-shadow: 0 12px 28px rgba(15, 23, 42, .08);
     }
 
-    [data-testid="stMetricLabel"] {
+    [data-testid="stMetricLabel"],
+    [data-testid="stMetricLabel"] p {
         color: var(--sc-muted);
         font-weight: 600;
     }
@@ -199,7 +206,7 @@ st.markdown(
         font-size: .82rem;
     }
 
-    /* Soft surfaces around charts, tables, and form sections */
+    /* Charts, tables and form surfaces */
     [data-testid="stPlotlyChart"],
     [data-testid="stVegaLiteChart"],
     [data-testid="stArrowVegaLiteChart"],
@@ -216,23 +223,22 @@ st.markdown(
         animation: sc-fade-up .7s ease-out both;
     }
 
-    /* Keep Streamlit's native chart toolbar enabled so users retain
-       Show data, download, copy, and expand controls where supported. */
-
     [data-testid="stDataFrame"] {
         border: 1px solid var(--sc-border);
         overflow: hidden;
     }
 
+    /* Tabs */
     [data-testid="stTabs"] button {
         transition: color .2s ease, background-color .2s ease;
     }
 
     [data-testid="stTabs"] button[aria-selected="true"] {
-        color: #0E7490;
+        color: var(--primary-color);
         font-weight: 700;
     }
 
+    /* Buttons */
     .stButton > button,
     .stDownloadButton > button,
     [data-testid="stFormSubmitButton"] > button {
@@ -242,89 +248,95 @@ st.markdown(
         overflow-wrap: anywhere;
     }
 
+    /* Overview feature cards */
     .sc-feature-title {
-    color: var(--sc-ink);
-    font-size: 1.1rem;
-    font-weight: 750;
-    line-height: 1.4;
-    margin-bottom: 10px;
-}
+        color: var(--sc-ink);
+        font-size: 1.1rem;
+        font-weight: 750;
+        line-height: 1.4;
+        margin-bottom: 10px;
+    }
 
-.sc-feature-description {
-    color: var(--sc-muted);
-    font-size: .95rem;
-    line-height: 1.65;
-}
-.st-key-overview_cards [data-testid="stButton"] > button p {
-    font-size: .95rem;
-    line-height: 1.65;
-}
-/* Overview feature cards */
-.sc-feature-card,
-.st-key-overview_cards [data-testid="stButton"] > button {
-    min-height: 140px;
-    height: 100%;
-    padding: 16px;
-    border: 1px solid rgba(148, 163, 184, .28);
-    border-radius: 14px;
-    background: rgba(255, 255, 255, .86);
-    color: var(--sc-ink);
-    box-shadow: 0 5px 18px rgba(15, 23, 42, .035);
-    transition: transform .22s ease,
-                box-shadow .22s ease,
-                border-color .22s ease;
-}
+    .sc-feature-description {
+        color: var(--sc-muted);
+        font-size: .95rem;
+        line-height: 1.65;
+    }
 
-.st-key-overview_cards [data-testid="stButton"] > button {
-    width: 100%;
-    text-align: left;
-    justify-content: flex-start;
-    align-items: flex-start;
-    white-space: normal;
-}
+    .sc-feature-card,
+    .st-key-overview_cards [data-testid="stButton"] > button {
+        min-height: 140px;
+        height: 100%;
+        padding: 20px;
+        border: 1px solid var(--sc-border);
+        border-radius: 14px;
+        background: var(--sc-surface);
+        color: var(--sc-ink);
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .035);
+        transition: transform .22s ease,
+                    box-shadow .22s ease,
+                    border-color .22s ease;
+    }
 
-.st-key-overview_cards [data-testid="stButton"] > button p {
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-    text-align: left;
-    font-size: 0.95rem;
-    line-height: 1.65;
-}
+    .st-key-overview_cards [data-testid="stButton"] > button {
+        width: 100%;
+        text-align: left;
+        justify-content: flex-start;
+        align-items: flex-start;
+        white-space: normal;
+    }
 
-.st-key-overview_cards [data-testid="stButton"] > button {
-    padding: 20px;
-    min-height: 140px;
-}
+    .st-key-overview_cards [data-testid="stButton"] > button p {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        text-align: left;
+        font-size: .95rem;
+        line-height: 1.65;
+    }
 
-.st-key-overview_cards [data-testid="stButton"] > button:hover,
-.sc-feature-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(37, 99, 235, .38);
-    box-shadow: 0 12px 26px rgba(15, 23, 42, .08);
-    background: #FFFFFF;
-}
+    .st-key-overview_cards [data-testid="stButton"] > button:hover,
+    .sc-feature-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(37, 99, 235, .38);
+        box-shadow: 0 12px 26px rgba(15, 23, 42, .08);
+    }
 
-.sc-feature-heading {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    color: var(--sc-ink);
-    font-size: .94rem;
-    font-weight: 750;
-    line-height: 1.45;
-    margin-bottom: 8px;
-}
+    .sc-feature-heading {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        color: var(--sc-ink);
+        font-size: .94rem;
+        font-weight: 750;
+        line-height: 1.45;
+        margin-bottom: 8px;
+    }
 
-.sc-feature-icon { flex: 0 0 auto; }
+    .sc-feature-icon { flex: 0 0 auto; }
 
-.sc-feature-description {
-    color: var(--sc-muted);
-    font-size: .8rem;
-    line-height: 1.55;
-}
+    .sc-feature-description {
+        color: var(--sc-muted);
+        font-size: .8rem;
+        line-height: 1.55;
+    }
 
     [data-testid="stStatusWidget"] {
         animation: sc-pulse-dot 2.4s ease-in-out infinite;
+    }
+    /* Theme-aware sidebar filter selections */
+    [data-testid="stSidebar"] [data-baseweb="tag"] {
+        background-color: var(--sc-blue) !important;
+        color: #FFFFFF !important;
+        border: 1px solid var(--sc-cyan);
+    }
+    
+    [data-testid="stSidebar"] [data-baseweb="tag"] span {
+        color: #FFFFFF !important;
+    }
+    
+    [data-testid="stSidebar"] [data-baseweb="tag"] svg {
+        fill: #FFFFFF !important;
+        color: #FFFFFF !important;
     }
     </style>
     """,
