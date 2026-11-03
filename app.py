@@ -434,7 +434,7 @@ if "active_data" in st.session_state:
 st.sidebar.markdown(
     """
     <div class="sidebar-footer">
-        <div class="sidebar-status">● LOCAL DEMO MODE</div>
+        <div class="sidebar-status">● SUPABASE CLOUD MODE</div>
         <div style="margin-top: 5px;">
             Historical data · Inventory planning
         </div>
